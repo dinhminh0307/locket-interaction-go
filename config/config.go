@@ -11,6 +11,7 @@ type Config struct {
     LocketAPIKey  string
     ServerPort    int
     ServerHost    string
+	CORS          CORSConfig
 }
 
 // Load loads configuration from environment variables or defaults.
@@ -28,6 +29,7 @@ func Load() (*Config, error) {
         LocketAPIKey:  getEnv("LOCKET_API_KEY", ""),
         ServerPort:    port,
         ServerHost:    getEnv("SERVER_HOST", ""),
+		CORS:          DefaultCORSConfig(),
     }
     
     return cfg, nil
