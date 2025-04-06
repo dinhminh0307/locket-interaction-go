@@ -1,5 +1,20 @@
 package global
 
+import (
+    "log"
+    "os"
+
+    "github.com/joho/godotenv"
+)
+
+// Initialize loads environment variables from .env file
+func Initialize() {
+    // Load .env file if it exists
+    if err := godotenv.Load(); err != nil {
+        log.Printf("Warning: .env file not found or could not be loaded: %v", err)
+    }
+}
+
 // Constants for Locket API
 const (
     // LoginURL is the Firebase Authentication endpoint for email/password login
@@ -7,10 +22,16 @@ const (
     
     // APIKeyQueryParam is the name of the query parameter for the Firebase API key
     APIKeyQueryParam = "key"
-    
-    // FirebaseAPIKey is the actual API key value
-    FirebaseAPIKey = "AIzaSyCQngaaXQIfJaH0aS2l7REgIjD7nL431So"
 )
+
+// GetFirebaseAPIKey returns the Firebase API key from environment variables
+func GetFirebaseAPIKey() string {
+    apiKey := os.Getenv("API_KEY")
+    if apiKey == "" {
+        log.Println("Warning: API_KEY environment variable not set")
+    }
+    return apiKey
+}
 
 // LoginHeaders contains all required HTTP headers for Locket API authentication
 var LoginHeaders = map[string]string{
@@ -26,8 +47,7 @@ var LoginHeaders = map[string]string{
     "X-Ios-Bundle-Identifier": "com.locket.Locket",
 }
 
-// FirebaseAuthHeaders contains specialized authentication headers that might require
-// dynamic generation for each request
+// FirebaseAuthHeaders contains specialized authentication headers
 var FirebaseAuthHeaders = map[string]string{
     "baggage": "sentry-environment=production,sentry-public_key=78fa64317f434fd89d9cc728dd168f50,sentry-release=com.locket.Locket@1.82.0+3,sentry-trace_id=90310ccc8ddd4d059b83321054b6245b",
     "sentry-trace": "90310ccc8ddd4d059b83321054b6245b-3a4920b34e94401d-0",

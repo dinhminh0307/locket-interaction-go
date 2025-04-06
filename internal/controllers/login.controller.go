@@ -24,13 +24,17 @@ type Client struct {
 }
 
 // NewClient creates a new Locket API client.
+// NewClient creates a new Locket API client.
 func NewClient(baseURL string, timeout time.Duration) (*Client, error) {
     parsedBaseURL, err := url.Parse(baseURL)
     if err != nil {
         return nil, fmt.Errorf("invalid base URL: %w", err)
     }
 
-    apiKey := global.FirebaseAPIKey
+    apiKey := global.GetFirebaseAPIKey()
+    if apiKey == "" {
+        return nil, fmt.Errorf("Firebase API key not provided")
+    }
 
     return &Client{
         httpClient: &http.Client{

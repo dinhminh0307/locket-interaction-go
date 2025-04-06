@@ -4,10 +4,14 @@ import (
     "log"
 
     "locket-interaction-go/config"
+    "locket-interaction-go/global"
     "locket-interaction-go/internal/server"
 )
 
 func main() {
+    // Initialize environment variables from .env
+    global.Initialize()
+    
     // Load configuration
     cfg, err := config.Load()
     if err != nil {

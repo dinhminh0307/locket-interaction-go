@@ -21,3 +21,6 @@ go.work
 # Compiled binaries
 locketcli
 locket-server
+
+#env
+.env
