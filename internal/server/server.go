@@ -1,42 +1,65 @@
 package server
 
 import (
+    "fmt"
     "log"
     "net/http"
     "time"
-    "fmt"
+
     "locket-interaction-go/config"
     "locket-interaction-go/internal/controllers"
-    "locket-interaction-go/internal/services/auth"
     "locket-interaction-go/internal/middlewares"
+    "locket-interaction-go/internal/services/auth"
+    "locket-interaction-go/internal/services/upload"
+    "locket-interaction-go/pkg/firebase"
 )
 
 // Server represents the HTTP server for the application
 type Server struct {
-    router        *http.ServeMux
-    httpServer    *http.Server
-    authService   *auth.Service
-    authController *controllers.AuthController
-    config        *config.Config
+    router          *http.ServeMux
+    httpServer      *http.Server
+    authService     *auth.Service
+    authController  *controllers.AuthController
+    uploadService   *upload.Service
+    uploadController *controllers.UploadController
+    config          *config.Config
 }
 
 // New creates a new server instance
 func New(cfg *config.Config) (*Server, error) {
+    // Create HTTP client
+    httpClient := &http.Client{
+        Timeout: 30 * time.Second,
+    }
+    
     // Create auth service
     authService, err := auth.NewService(cfg.LocketBaseURL, 30*time.Second)
     if err != nil {
         return nil, err
     }
 
+    // Create Firebase service
+    firebaseService := firebase.NewService(httpClient, cfg.FirebaseAPIKey)
+    
+    // Create upload service
+    uploadService := upload.NewService(
+        firebaseService,
+        httpClient,
+        cfg.CreatePostURL, // You need to add this to your config
+    )
+
     // Create controllers
     authController := controllers.NewAuthController(authService)
+    uploadController := controllers.NewUploadController(uploadService)
 
     // Create server
     server := &Server{
-        router:        http.NewServeMux(),
-        authService:   authService,
-        authController: authController,
-        config:        cfg,
+        router:          http.NewServeMux(),
+        authService:     authService,
+        authController:  authController,
+        uploadService:   uploadService,
+        uploadController: uploadController,
+        config:          cfg,
     }
 
     // Register routes
@@ -68,6 +91,6 @@ func (s *Server) registerRoutes() {
     // Register auth routes
     s.router.HandleFunc("/api/auth/login", s.authController.HandleLogin())
     
-    // You can add more routes as needed
-    // s.router.HandleFunc("/api/some-endpoint", s.handleSomeEndpoint())
+    // Register upload routes
+    s.router.HandleFunc("/api/upload/image", s.uploadController.HandleUploadImage())
 }

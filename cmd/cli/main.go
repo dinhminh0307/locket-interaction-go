@@ -11,6 +11,7 @@ import (
 func main() {
     // Initialize environment variables from .env
     global.Initialize()
+
     
     // Load configuration
     cfg, err := config.Load()

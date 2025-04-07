@@ -18,7 +18,7 @@ func DefaultCORSConfig() CORSConfig {
         AllowedHeaders: []string{
             "Authorization", "Content-Type", "Accept",
             "Origin", "User-Agent", "DNT", "Cache-Control",
-            "X-Requested-With", "X-Client-Version", "X-Firebase-GMPID",
+            "X-Requested-With", "X-Client-Version", "X-Firebase-GMPID", "X-User-ID",
         },
         ExposedHeaders:   []string{},
         AllowCredentials: true,

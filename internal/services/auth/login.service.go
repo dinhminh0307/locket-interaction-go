@@ -5,7 +5,7 @@ import (
     "fmt"
     "locket-interaction-go/global"
     "locket-interaction-go/internal/models"
-    "locket-interaction-go/pkg"
+    "locket-interaction-go/pkg/firebase"
     "net/http"
    
     "time"
