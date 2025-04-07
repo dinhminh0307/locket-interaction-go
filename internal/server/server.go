@@ -1,17 +1,18 @@
 package server
 
 import (
-    "fmt"
-    "log"
-    "net/http"
-    "time"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"time"
 
-    "locket-interaction-go/config"
-    "locket-interaction-go/internal/controllers"
-    "locket-interaction-go/internal/middlewares"
-    "locket-interaction-go/internal/services/auth"
-    "locket-interaction-go/internal/services/upload"
-    "locket-interaction-go/pkg/firebase"
+	"locket-interaction-go/config"
+	"locket-interaction-go/internal/controllers"
+	"locket-interaction-go/internal/middlewares"
+	"locket-interaction-go/internal/services/auth"
+	"locket-interaction-go/internal/services/upload"
+	"locket-interaction-go/pkg/firebase"
 )
 
 // Server represents the HTTP server for the application
@@ -93,4 +94,12 @@ func (s *Server) registerRoutes() {
     
     // Register upload routes
     s.router.HandleFunc("/api/upload/image", s.uploadController.HandleUploadImage())
+    
+    // Add health check endpoint
+    s.router.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+        w.WriteHeader(http.StatusOK)
+        w.Header().Set("Content-Type", "application/json")
+        json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
+    })
 }
+

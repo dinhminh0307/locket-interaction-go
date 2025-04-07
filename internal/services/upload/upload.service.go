@@ -32,7 +32,7 @@ func (s *Service) UploadImage(ctx context.Context, userId, idToken string, image
     log.Printf("Starting image upload for user %s", userId)
     
     // 1. Upload image to Firebase Storage
-    imageURL, err := s.firebaseService.UploadFileToStorage(ctx, userId, idToken, imageData, "image/webp")
+    imageURL, err := s.firebaseService.UploadFileToStorage(ctx, userId, idToken, imageData, "image/*")
     if err != nil {
         log.Printf("Failed to upload image: %v", err)
         return fmt.Errorf("failed to upload image: %w", err)
