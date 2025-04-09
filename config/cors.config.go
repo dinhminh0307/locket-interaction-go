@@ -13,7 +13,7 @@ type CORSConfig struct {
 // DefaultCORSConfig returns the default CORS configuration
 func DefaultCORSConfig() CORSConfig {
     return CORSConfig{
-        AllowedOrigins: []string{"http://localhost:5173", "http://localhost:3000"}, // Add your frontend origins here
+        AllowedOrigins: []string{"http://localhost:5173", "http://localhost:3000", "https://locket-uploader-fe-them.vercel.app"}, // Add your frontend origins here
         AllowedMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
         AllowedHeaders: []string{
             "Authorization", "Content-Type", "Accept",
