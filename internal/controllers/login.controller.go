@@ -6,6 +6,8 @@ import (
     "log"
     "locket-interaction-go/internal/models"
     "locket-interaction-go/internal/services/auth"
+    "locket-interaction-go/internal/models/request"
+    
     "net/http"
     "time"
 )
@@ -67,5 +69,47 @@ func (c *AuthController) HandleLogin() http.HandlerFunc {
         // Return successful response
         w.Header().Set("Content-Type", "application/json")
         json.NewEncoder(w).Encode(loginResp)
+    }
+}
+
+// HandlePhoneLogin handles login requests with phone number
+func (c *AuthController) HandlePhoneLogin() http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        // Only allow POST requests
+        if r.Method != http.MethodPost {
+            http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+            return
+        }
+
+        // Parse request body
+        var phoneLoginReq request.PhoneLoginRequest
+        if err := json.NewDecoder(r.Body).Decode(&phoneLoginReq); err != nil {
+            http.Error(w, "Invalid request body", http.StatusBadRequest)
+            return
+        }
+
+        // Validate required fields
+        if phoneLoginReq.Data.Phone == "" || phoneLoginReq.Data.Password == "" {
+            http.Error(w, "Phone and password are required", http.StatusBadRequest)
+            return
+        }
+
+        // Create context with timeout
+        ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
+        defer cancel()
+
+        // Call auth service to handle login
+        phoneLoginResp, err := c.authService.LoginWithPhone(ctx, 
+            phoneLoginReq.Data.Phone, 
+            phoneLoginReq.Data.Password)
+        if err != nil {
+            log.Printf("Phone login error: %v", err)
+            http.Error(w, "Authentication failed", http.StatusInternalServerError)
+            return
+        }
+
+        // Return successful response
+        w.Header().Set("Content-Type", "application/json")
+        json.NewEncoder(w).Encode(phoneLoginResp)
     }
 }

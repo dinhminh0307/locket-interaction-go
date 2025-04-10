@@ -91,6 +91,7 @@ func (s *Server) Start() error {
 func (s *Server) registerRoutes() {
     // Register auth routes
     s.router.HandleFunc("/api/auth/login", s.authController.HandleLogin())
+    s.router.HandleFunc("/api/auth/phone-login", s.authController.HandlePhoneLogin())
     
     // Register upload routes
     s.router.HandleFunc("/api/upload/image", s.uploadController.HandleUploadImage())

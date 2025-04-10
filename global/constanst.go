@@ -25,6 +25,10 @@ const (
     
     // APIKeyQueryParam is the name of the query parameter for the Firebase API key
     APIKeyQueryParam = "key"
+
+    LoginWithPhone = "https://api.locketcamera.com/signInWithPhonePassword"
+
+    IOSVersion = "1.119.0.1"
 )
 
 // GetFirebaseAPIKey returns the Firebase API key from environment variables
